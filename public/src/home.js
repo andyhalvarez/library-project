@@ -7,14 +7,15 @@ function getTotalAccountsCount(accounts) {
 }
 
 function getBooksBorrowedCount(books) {
-  let result = 0;
-  for (let i = 0; i < books.length; i++) {
-    for (let j = 0; j < books[i].borrows.length; j++) {
-      if (books[i].borrows[j].returned === false) {
-        result += 1;
-      }
-    }
-  }
+  let val = 0;
+  books.forEach((b) => {
+    if (b.borrows[0].returned === false) val++;
+  });
+
+  const result = books.reduce((acc, book) => {
+    const borrowed = book.borrows.filter((borrow) => !borrow.returned);
+    return (acc += borrowed.length);
+  }, 0);
 
   return result;
 }

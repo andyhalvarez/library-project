@@ -9,18 +9,28 @@ function findBookById(books, id) {
 }
 
 function partitionBooksByBorrowedStatus(books) {
-  const booksReturned = books.filter((book) => book.borrows[0].returned);
-  const booksUnreturned = books.filter((book) => !book.borrows[0].returned);
-  return [booksUnreturned, booksReturned];
+  let booksReturned = books.filter((book) =>
+    book.borrows.every((borrow) => borrow.returned === true)
+  );
+
+  let booksBorrowed = books.filter((book) =>
+    book.borrows.some((borrow) => borrow.returned === false)
+  );
+
+  let finalArray = [[...booksBorrowed], [...booksReturned]];
+  return finalArray;
+}
+
+function getFirstTen(list) {
+  return list.slice(0, 10);
 }
 
 function getBorrowersForBook(book, accounts) {
-  return book.borrows
-    .map((borrow) => {
-      let account = accounts.find((account) => account.id === borrow.id);
-      return { ...borrow, ...account };
-    })
-    .slice(0, 10);
+  const borrowedBooks = book.borrows.map((borrow) => {
+    const account = accounts.find((account) => account.id === borrow.id);
+    return { ...borrow, ...account };
+  });
+  return getFirstTen(borrowedBooks);
 }
 
 module.exports = {
